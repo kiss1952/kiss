@@ -1,6 +1,6 @@
 <?php
 /**
-  * User:温永
+  * Creater:kiss
   * Date:2014/7/8
   * @desc:simplexml生成xml类
   *
