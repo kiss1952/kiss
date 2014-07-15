@@ -1,13 +1,13 @@
 <?php
 /**
-  * Creater:kiss
+  * User:温永
   * Date:2014/7/8
   * @desc:simplexml生成xml类
   *
 */
 class GenerateXml
 {	
-	const ROOT = '<root />';
+	public $root;
 
 	//数组中标签数组
 	const  TAG = 'tag';
@@ -28,8 +28,11 @@ class GenerateXml
 	public $xmlArray;
 	
 	public function __construct()
-	{
-		if ($this->xmlArray) {
+	{	
+		if (empty($this->root)) {
+			$this->root = "<root />";
+		}
+		if (empty($this->xmlArray)) {
 			 $this->xmlArray = array();
 		}
 	}
@@ -39,14 +42,16 @@ class GenerateXml
 		if (count($this->xmlArray) == 0) {
 			echo "xmlArray没有传入数据";
 		} else {
-			self::generateData();
+			$xml = self::generateData();
+			$this->formatXml($xml);
 		}
 	}
 	
 	protected function generateData()
 	{	
+		
 		$data = self::exitData($this->xmlArray);
-		$xml = new SimpleXMLElement(self::ROOT);
+		$xml = new SimpleXMLElement($this->root);
 		$tag = $xml->addChild($data[self::TAG]);
 		
 		foreach ($data[self::PROPERTY] as $Property) {
@@ -54,7 +59,8 @@ class GenerateXml
 		}
 
 		$this->childrenGetData($tag, $data[self::CHILD]);
-		echo $xml->asXML();
+		$xml = $xml->asXML();
+		return  $xml;
 	}
 	
 	protected function childrenGetData($tag, $data)
@@ -92,6 +98,15 @@ class GenerateXml
 		}
 
 		return $result;
+	}
+
+	public function formatXml($xml) 
+	{
+		$xmlDoc = new DOMDocument();
+		$xmlDoc->preserveWhiteSpace = false; 
+		$xmlDoc->formatOutput = true;
+		$xmlDoc->loadXML($xml);
+		echo $xmlDoc->saveXML();
 	}
 }
 
